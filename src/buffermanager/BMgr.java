@@ -1,7 +1,10 @@
 package buffermanager;
 
+import java.util.Arrays;
+
 import buffer.BCB;
 import buffer.Bframe;
+import buffer.Page;
 
 public class BMgr {
 	public int defbufsize = 1024;
@@ -42,8 +45,22 @@ public class BMgr {
 	/* 
 	 * @return a page_id and a frame_id
 	 */
-	public void FixNewPage() {
-		
+	public String FixNewPage() {
+		BCB tempblock = null;
+		for(BCB bcb : bufferblocks) {
+			if(bcb.latch == 0) {
+				tempblock = bcb;
+				break;
+			}
+		}
+		Page temppage = null;
+		for(Page page : dsmgr.pages) {
+			if(page.in_buffer == false) {
+				temppage = page;
+				break;
+			}
+		}
+		return temppage.page_id + "," +  tempblock.frame_id;
 	}
 	/*
 	 * 
@@ -51,7 +68,12 @@ public class BMgr {
 	public int UnfixPage(int page_id) {
 		for(BCB bufferblock : bufferblocks) {
 			if(bufferblock.page_id == page_id) {
-				
+				bufferblock.count -= 1;
+				if(bufferblock.count == 0)	bufferblock.latch = 0;
+				if(bufferblock.frame_id == SelectVictim()) {
+					//remove frame
+					
+				}
 			}
 		}
 		return page_id;
@@ -74,7 +96,12 @@ public class BMgr {
 	 * 
 	 */
 	public int FindFrame(int page_id) {
-		return page_id;
+		for(BCB bcb : bufferblocks) {
+			if(bcb.page_id == page_id) {
+				return bcb.frame_id;
+			}
+		}
+		return 0;
 		
 	}
 	
@@ -107,14 +134,30 @@ public class BMgr {
 	 * this is only called if the selectvictim() function needs to replace a frame
 	 */
 	public void RemoveBCB(int page_id) {
+		int index = 0;
+		for(BCB bcb : bufferblocks) {
+			if(bcb.page_id == page_id) {
+				index = Arrays.binarySearch(bufferblocks, bcb);
+				break;
+			}
+		}
 		
+		for(int i = index; i < bufferblocks.length; i ++) {
+			bufferblocks[i] = bufferblocks[i + 1];
+		}
 	}
 	
 	/* removes the least-recently-used element from the list
 	 * 
 	 */
 	public void RemoveLRUEle(int frid) {
-		
+		for(BCB bcb : bufferblocks) {
+			if(bcb.frame_id == frid) {
+				bcb.latch = 0;
+				//bcb.page_id = 0;
+				return;
+			}
+		}
 	}
 	
 	/* set the  dirty bit for the frame_id
