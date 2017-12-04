@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
+<<<<<<< HEAD
 	<name>CCFSentiment</name>
+=======
+	<name>Storagemanager</name>
+>>>>>>> 775944530bebe257245cc6b631bc58dd3f2a218b
 	<comment></comment>
 	<projects>
 	</projects>
