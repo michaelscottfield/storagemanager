@@ -138,6 +138,7 @@ public class BMgr {
 	 * fixnewpage在本实验不需要，因为trace文件里面的页全都在磁盘里面
 	 */
 	public int FixNewPage(int page_id) {//如果要写的page在磁盘中是不存在的，那么生成新的page并放置缓冲区中，并设置该frame的dirty为true
+		//System.out.println("fwefewfweew");
 		BCB blocks[] = ptof[page_id % DEFBUFSIZE];
 		int frame_id = NumFreeFrames();
 		if(frame_id == -1) {
@@ -222,6 +223,7 @@ public class BMgr {
 				SetDirty(FindFrame(page).frame_id);				
 			}
 			else {
+				//System.out.println("fneuiwfniueweinfwu");
 				FixNewPage(page);
 			}
 		}
@@ -283,6 +285,7 @@ public class BMgr {
 			//System.out.println("fehoiwqoi");
 			//为什么从来没执行到这里
 			storage.WritePage(FindFrame(del_page).frame_id);
+			//FindFrame(del_page).dirty = false;
 		}
 		RemoveBCB(del_page);
 		return 0;
@@ -312,7 +315,7 @@ public class BMgr {
 		//if(blocks[0] == null) System.out.println("..fsdaf.dsafok");
 		//System.out.println(blocks.length + "rrrrrrr");
 		//blocks的长度错误
-		blocks[blocks.length - 1] = new BCB(-1, -1, false, 0, false); 
+		blocks[blocks.length - 1] = new BCB(-1, -1, true, 0, false); 
 		/*if(blocks[0].page_id == page_id) {
 			ftop[blocks[0].frame_id] = -1;
 			//ptof[page_id % DEFBUFSIZE][0] = ptof[page_id % DEFBUFSIZE][1];

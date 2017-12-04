@@ -82,6 +82,7 @@ public class LabClient {
 			//lru队列全是-1？？问题很大
 			//System.out.println("shit" + buffer_client.lru.pageids[0]);
 			br.close();
+			IOCount();
 			buffer_client.WriteDirtys();
 			for(int i = 0; i < buffer_client.DEFBUFSIZE; i ++) {
 				if(buffer_client.ftop[i] != -1) {
@@ -89,7 +90,7 @@ public class LabClient {
 					buffer_client.RemoveBCB(page);
 				}
 			}
-			IOCount();
+			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
